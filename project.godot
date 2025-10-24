@@ -13,6 +13,7 @@ config_version=5
 config/name="Circuit Break"
 run/main_scene="uid://q5kc7rk41d6v"
 config/features=PackedStringArray("4.5", "Forward Plus")
+boot_splash/image="uid://387sea5d2bg2"
 config/icon="res://icon.svg"
 
 [input]
