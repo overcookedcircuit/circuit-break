@@ -56,6 +56,8 @@ func player_movement(delta):
 
 func play_animation(movement):
 	if is_shooting:
+		velocity = Vector2.ZERO  # <-- important
+		move_and_slide()
 		return  # don't override shooting animation
 	
 	var dir = current_dir
@@ -77,30 +79,38 @@ func play_animation(movement):
 func shoot_bullet():
 	if not can_shoot or bullet_scene == null:
 		return
-	
+
 	can_shoot = false
 	is_shooting = true
-	
-	# Play animation and wait for it to finish
+
+	# Hard stop
+	velocity = Vector2.ZERO
+	move_and_slide()
+
+	# Play shooting animation
 	$AnimatedSprite2D.play("shoot")
-	# Small delay to sync with the animation
-	await get_tree().create_timer(1.2).timeout
-	
-	# Spawn bullet immediately
+
+	# Delay to sync with animation muzzle flash
+	await get_tree().create_timer(1.00).timeout  # adjust to match your animation frame
+
+	# Spawn bullet
 	var bullet = bullet_scene.instantiate()
 	var offset = Vector2(25, 0)
 	if current_dir == "left":
 		offset.x *= -1
 	bullet.position = global_position + offset
+
 	if current_dir == "left":
 		bullet.scale.x = -1
 		bullet.speed *= -1
+
 	get_parent().add_child(bullet)
-	
-	# Wait for animation to finish before moving again
+
+	# Wait until animation ends
 	await $AnimatedSprite2D.animation_finished
+
 	is_shooting = false
 
-	# Then start cooldown
+	# Cooldown after animation
 	await get_tree().create_timer(shoot_cooldown).timeout
 	can_shoot = true
