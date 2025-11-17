@@ -71,10 +71,10 @@ func play_animation(movement):
 	if dir == "right":
 		animation.flip_h = false
 	elif dir == "left":
-		animation.flip_h = true
+		animation.flip_h = true	
 
 	if not is_on_floor():
-			animation.play("jumping")
+			animation.play("jumping", 1.5)
 			return
 
 	if movement == 1:
